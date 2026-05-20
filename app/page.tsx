@@ -2,6 +2,7 @@ import Image from "next/image";
 import { VideoBackground } from "@/components/video-background";
 import { WaitlistForm } from "@/components/waitlist-form";
 import { FeatureShowcase } from "@/components/feature-showcase";
+import { SiteNav } from "@/components/site-nav";
 
 export default function Home() {
   return (
@@ -11,12 +12,13 @@ export default function Home() {
         {/* Video layer */}
         <VideoBackground />
 
-        {/* Soft readability overlays — not a solid block */}
-        <div className="pointer-events-none absolute inset-0 z-[1] bg-black/25" />
-        <div className="pointer-events-none absolute inset-0 z-[2] bg-[radial-gradient(circle_at_28%_22%,rgba(176,124,158,0.2),transparent_34%),radial-gradient(circle_at_72%_44%,rgba(15,82,87,0.26),transparent_38%),linear-gradient(to_bottom,rgba(2,3,3,0.08),rgba(2,3,3,0.22)_58%,rgba(2,3,3,0.62)_88%,#020303_100%)]" />
+        {/* Soft readability overlays — darkened slightly for nav and hero text clarity */}
+        <div className="pointer-events-none absolute inset-0 z-[1] bg-black/35" />
+        <div className="pointer-events-none absolute inset-0 z-[2] bg-[radial-gradient(circle_at_28%_22%,rgba(176,124,158,0.16),transparent_34%),radial-gradient(circle_at_72%_44%,rgba(15,82,87,0.22),transparent_38%),linear-gradient(to_bottom,rgba(2,3,3,0.18),rgba(2,3,3,0.34)_58%,rgba(2,3,3,0.72)_88%,#020303_100%)]" />
 
         {/* Content layer */}
         <div className="relative z-10 mx-auto flex min-h-[125vh] w-full max-w-7xl flex-col px-4 py-8 md:px-8">
+          <SiteNav />
           <div className="pt-[55vh] md:pt-[54vh] lg:pt-[52vh]">
             <div className="grid items-end gap-12 pb-28 lg:grid-cols-[1.08fr_0.92fr] lg:pb-32">
               {/* Left side - Branding */}
@@ -88,9 +90,10 @@ export default function Home() {
           </div>
 
           <p className="text-white/50 text-sm leading-relaxed max-w-2xl mx-auto">
-            Demo videos and usernames shown are sourced from incredibly talented Black beauty content creators. They are used here to demonstrate the kind of content that
-            will be featured on DOUS when it launches. These creators are not
-            users of the platform... yet.
+            Demo videos and usernames shown are sourced from incredibly talented
+            Black beauty content creators. They are used here to demonstrate the
+            kind of content that will be featured on DOUS when it launches.
+            These creators are not users of the platform... yet.
           </p>
 
           <p className="mt-6 text-sm text-white/40">
