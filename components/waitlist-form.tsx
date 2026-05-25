@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,6 +24,7 @@ export function WaitlistForm() {
   const [email, setEmail] = useState("");
   const [userType, setUserType] = useState<UserType | null>(null);
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+  const [website, setWebsite] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +41,10 @@ export function WaitlistForm() {
     e.preventDefault();
     setError(null);
 
-    if (!name || !email || !userType) {
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim().toLowerCase();
+
+    if (!trimmedName || !trimmedEmail || !userType) {
       setError("Please fill in all required fields");
       return;
     }
@@ -54,21 +57,24 @@ export function WaitlistForm() {
     setIsSubmitting(true);
 
     try {
-      const supabase = createClient();
-
-      const { error: insertError } = await supabase.from("waitlist").insert({
-        name,
-        email,
-        user_type: userType,
-        professional_roles: userType === "professional" ? selectedRoles : null,
+      const response = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: trimmedName,
+          email: trimmedEmail,
+          userType,
+          professionalRoles: userType === "professional" ? selectedRoles : [],
+          website,
+        }),
       });
 
-      if (insertError) {
-        if (insertError.code === "23505") {
-          setError("This email is already on the waitlist!");
-        } else {
-          setError("Something went wrong. Please try again.");
-        }
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || "Something went wrong. Please try again.");
         return;
       }
 
@@ -106,6 +112,17 @@ export function WaitlistForm() {
       onSubmit={handleSubmit}
       className="space-y-6 rounded-[2rem] border border-white/20 bg-[#020303]/55 p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_24px_80px_rgba(0,0,0,0.38),0_0_48px_rgba(176,124,158,0.12)] backdrop-blur-[28px] md:p-8"
     >
+      <input
+        type="text"
+        name="website"
+        value={website}
+        onChange={(e) => setWebsite(e.target.value)}
+        className="hidden"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+      />
+
       <div className="mb-6 text-center">
         <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-[#B07C9E]/90">
           Beta access
@@ -133,6 +150,8 @@ export function WaitlistForm() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             className={inputClassName}
+            autoComplete="name"
+            required
           />
         </div>
 
@@ -151,6 +170,8 @@ export function WaitlistForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className={inputClassName}
+            autoComplete="email"
+            required
           />
         </div>
 
